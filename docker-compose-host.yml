@@ -1,0 +1,30 @@
+services:
+  spark-master:
+    container_name: spark-master
+    image: this_spark_made_me_dirty
+    environment:
+      - SPARK_MODE=master
+      - SPARK_RPC_AUTHENTICATION_ENABLED=no
+      - SPARK_RPC_ENCRYPTION_ENABLED=no
+      - SPARK_LOCAL_STORAGE_ENCRYPTION_ENABLED=no
+      - SPARK_SSL_ENABLED=no
+    ports:
+      - '8080:8080'  # Web UI
+      - '7077:7077'  # Master URL
+      - '4040:4040'  # Spark Application UI
+    network_mode: host  # Используем сеть хоста для доступа по localhost
+
+  spark-worker:
+    image: this_spark_made_me_dirty
+    environment:
+      - SPARK_MODE=worker
+      - SPARK_MASTER_URL=spark://localhost:7077  # Используем localhost
+      - SPARK_WORKER_MEMORY=1G
+      - SPARK_WORKER_CORES=1
+      - SPARK_RPC_AUTHENTICATION_ENABLED=no
+      - SPARK_RPC_ENCRYPTION_ENABLED=no
+      - SPARK_LOCAL_STORAGE_ENCRYPTION_ENABLED=no
+      - SPARK_SSL_ENABLED=no
+    network_mode: host  # Используем сеть хоста
+    depends_on:
+      - spark-master
